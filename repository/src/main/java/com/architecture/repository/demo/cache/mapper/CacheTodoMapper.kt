@@ -2,10 +2,10 @@ package com.architecture.repository.demo.mapper
 
 import com.architecture.business.demo.info.ToDoInfo
 import com.architecture.repository.core.mapper.BaseInfoMapper
-import com.architecture.repository.demo.model.Todo
+import com.architecture.repository.demo.model.TodoEntity
 
-class TodoMapper : BaseInfoMapper<Todo, ToDoInfo> {
-    override fun transform(input: Todo): ToDoInfo {
+class CacheTodoMapper : BaseInfoMapper<TodoEntity, ToDoInfo> {
+    override fun transform(input: TodoEntity): ToDoInfo {
         var info: ToDoInfo = ToDoInfo()
         info.id = input.id
         info.completed = input.completed
