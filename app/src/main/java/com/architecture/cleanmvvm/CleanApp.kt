@@ -1,7 +1,7 @@
 package com.architecture.cleanmvvm
 
 import android.app.Application
-import com.architecture.repository.demo.local.service.AppDatabase
+import com.architecture.repository.demo.local.features.todo.service.AppDatabase
 import org.jetbrains.anko.doAsync
 
 class CleanApp: Application() {

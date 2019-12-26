@@ -19,7 +19,7 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
 
     abstract suspend fun getData(): Result
 
-    override fun executeData(callback: CallBack): Job {
+    override fun invoke(callback: CallBack): Job {
         return CoroutineScope(subscriberContext).launch {
             // implement thread to call
             var data: Result?

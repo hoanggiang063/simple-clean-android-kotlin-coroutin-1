@@ -7,5 +7,5 @@ interface BaseUseCase<Param, Result, CallBack : BasePresentCallBack<Result>> {
 
     fun buildUseCase(param: Param): BaseUsecaseImpl<Param, Result, CallBack>
 
-    fun executeData(callback: CallBack): Job
+    operator fun invoke(callback: CallBack): Job
 }

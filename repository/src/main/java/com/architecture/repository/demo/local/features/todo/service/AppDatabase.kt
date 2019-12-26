@@ -1,4 +1,4 @@
-package com.architecture.repository.demo.local.service
+package com.architecture.repository.demo.local.features.todo.service
 
 import android.content.Context
 import androidx.room.Database

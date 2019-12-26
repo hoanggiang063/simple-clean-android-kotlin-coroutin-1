@@ -9,7 +9,7 @@ import com.architecture.business.demo.info.ToDoInfo
 import com.architecture.business.demo.repository.ToDoRepository
 import com.architecture.business.demo.usecase.ToDoUseCase
 import com.architecture.business.demo.usecase.ToDoUseCaseImpl
-import com.architecture.repository.demo.local.service.AppDatabase
+import com.architecture.repository.demo.local.features.todo.service.AppDatabase
 import com.architecture.repository.demo.repository.CacheToDoRepositoryImpl
 import com.architecture.repository.demo.repository.LocalToDoRepositoryImpl
 import com.architecture.repository.demo.repository.RemoteToDoRepositoryImpl
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             progress.show()
             // load data by network (remote)
             todoUseCase.buildUseCase(1)
-            todoUseCase.executeData(object : ToDoCallBack {
+            todoUseCase(object : ToDoCallBack {
                 override fun onSuccess(expectedResult: ToDoInfo?) {
                     Log.v("vhgiang", "=> remote solution run pass: " + expectedResult.toString())
                     progress.dismiss()
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
             todoUseCase = ToDoUseCaseImpl(cacheRepository)
             todoUseCase.buildUseCase(1)
-            todoUseCase.executeData(object : ToDoCallBack {
+            todoUseCase(object : ToDoCallBack {
                 override fun onSuccess(expectedResult: ToDoInfo?) {
                     Log.v("vhgiang", "=> cache solution run pass: " + expectedResult.toString())
                     progress.dismiss()
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             // load data by db
             todoUseCase = ToDoUseCaseImpl(localRepository)
             todoUseCase.buildUseCase(1)
-            todoUseCase.executeData(object : ToDoCallBack {
+            todoUseCase(object : ToDoCallBack {
                 override fun onSuccess(expectedResult: ToDoInfo?) {
                     Log.v("vhgiang", "=> db solution run pass: " + expectedResult.toString())
 
