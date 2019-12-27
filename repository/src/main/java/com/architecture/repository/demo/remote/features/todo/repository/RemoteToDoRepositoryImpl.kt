@@ -4,7 +4,6 @@ import android.util.Log
 import com.architecture.business.demo.info.ToDoInfo
 import com.architecture.business.demo.repository.ToDoRepository
 import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
-import com.architecture.repository.demo.mapper.LocalTodoMapper
 import com.architecture.repository.demo.mapper.RemoteTodoMapper
 import com.architecture.repository.demo.service.Webservice
 
@@ -15,18 +14,12 @@ class RemoteToDoRepositoryImpl(var service: Webservice) : ToDoRepository {
         this.myParam = param;
     }
 
-    override fun getParam(): Int {
-        return myParam;
-    }
-
-    override suspend fun getToDo(id: Int): ToDoInfo {
-
+    override suspend fun invoke(): ToDoInfo {
         try {
-            return RemoteTodoMapper().transform(service.getTodo(id))
+            return RemoteTodoMapper().transform(service.getTodo(myParam))
         } catch (error: Throwable) {
-            Log.e("vhgiang", "remote error:"+ error?.printStackTrace())
+            Log.e("vhgiang", "remote error:" + error?.printStackTrace())
             throw BaseExceptionMapperImpl().transform(error)
         }
-
     }
 }

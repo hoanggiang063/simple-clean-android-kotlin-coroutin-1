@@ -4,5 +4,4 @@ import com.architecture.business.core.repository.BaseRepository
 import com.architecture.business.demo.info.ToDoInfo
 
 interface ToDoRepository : BaseRepository<Int, ToDoInfo> {
-    suspend fun getToDo(id: Int):ToDoInfo
 }

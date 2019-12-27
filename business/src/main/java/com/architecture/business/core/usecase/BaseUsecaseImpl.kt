@@ -6,8 +6,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Result>>
-    (val bankRepository: BaseRepository<Param, Result>)
-    :BaseUseCase<Param, Result, CallBack> {
+    (val bankRepository: BaseRepository<Param, Result>) : BaseUseCase<Param, Result, CallBack> {
 
     var subscriberContext: CoroutineContext = Dispatchers.IO
     var observerContext: CoroutineContext = Dispatchers.Main
@@ -17,15 +16,13 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
         return this
     }
 
-    abstract suspend fun getData(): Result
-
     override fun invoke(callback: CallBack): Job {
         return CoroutineScope(subscriberContext).launch {
             // implement thread to call
             var data: Result?
 
             try {
-                data = getData()
+                data = bankRepository()
                 withContext(observerContext) {
                     handleSuccess(data, callback)
                 }
@@ -45,18 +42,16 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
 
     private fun handleFail(error: Throwable, callback: CallBack) {
 
-        if (!handleByChild(error, callback)) {
-            handleByGeneric(error, callback)
+        if (!hanldeExceptionByChild(error, callback)) {
+            handleExceptionByGeneric(error, callback)
         } else {
             callback.onFail(error)
         }
     }
 
-    open fun handleByChild(error: Throwable, callback: CallBack): Boolean {
-        return false;
-    }
+    abstract fun hanldeExceptionByChild(error: Throwable, callback: CallBack): Boolean
 
-    open fun handleByGeneric(error: Throwable, callback: CallBack) {
+    open fun handleExceptionByGeneric(error: Throwable, callback: CallBack) {
         callback.onFail(error)
     }
 }

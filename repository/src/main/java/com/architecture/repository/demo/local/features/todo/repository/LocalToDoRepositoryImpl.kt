@@ -10,21 +10,17 @@ import com.architecture.repository.demo.model.ToDoDao
 class LocalToDoRepositoryImpl(val todo: ToDoDao) : ToDoRepository {
     var mParam: Int = 0;
 
-    override suspend fun getToDo(id: Int): ToDoInfo {
-        try {
-            return LocalTodoMapper().transform(todo.getTodoEntity(id))
-        } catch (exception: Throwable) {
-            Log.e("vhgiang", "local db error: " + exception?.message)
-            throw BaseExceptionMapperImpl().transform(exception)
-        }
-    }
-
     override fun setParam(param: Int) {
         mParam = param;
     }
 
-    override fun getParam(): Int {
-        return mParam
+    override suspend fun invoke(): ToDoInfo {
+        try {
+            return LocalTodoMapper().transform(todo.getTodoEntity(mParam))
+        } catch (exception: Throwable) {
+            Log.e("vhgiang", "local db error: " + exception?.message)
+            throw BaseExceptionMapperImpl().transform(exception)
+        }
     }
 
     suspend fun saveTodo(todoObj: ToDoInfo) {

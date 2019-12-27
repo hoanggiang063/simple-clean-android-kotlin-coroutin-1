@@ -11,16 +11,26 @@ import kotlinx.coroutines.delay
 
 class CacheToDoRepositoryImpl(
     val forceRefresh: Boolean,
-    val local: LocalToDoRepositoryImpl,
-    val remote: RemoteToDoRepositoryImpl
+    val localDataGetting: LocalToDoRepositoryImpl,
+    val remoteDataGetting: RemoteToDoRepositoryImpl
 ) : ToDoRepository {
 
     var mParam: Int = 0;
 
-    override suspend fun getToDo(id: Int): ToDoInfo {
+    fun shouldFetch(data: ToDoInfo?): Boolean {
+        return data == null || forceRefresh
+    }
+
+    override fun setParam(param: Int) {
+        mParam = param
+        localDataGetting.setParam(mParam)
+        remoteDataGetting.setParam(mParam)
+    }
+
+    override suspend fun invoke(): ToDoInfo {
         var result: ToDoInfo? = null;
         try {
-            result = local.getToDo(id)
+            result = localDataGetting()
         } catch (exception: Throwable) {
             Log.e("vhgiang", exception?.toString())
         }
@@ -29,12 +39,12 @@ class CacheToDoRepositoryImpl(
 
             CoroutineScope(Dispatchers.Default).async {
                 delay(4000) //for show showloading dialog
-                result = remote.getToDo(id)
+                result = remoteDataGetting()
             }.await()
 
             result?.let {
-                local.saveTodo(result!!)
-                result = local.getToDo(id)
+                localDataGetting.saveTodo(result!!)
+                result = localDataGetting()
             }
 
         }
@@ -44,18 +54,6 @@ class CacheToDoRepositoryImpl(
         }
 
         throw BusinessException();
-    }
-
-    fun shouldFetch(data: ToDoInfo?): Boolean {
-        return data == null || forceRefresh
-    }
-
-    override fun setParam(param: Int) {
-        mParam = param
-    }
-
-    override fun getParam(): Int {
-        return mParam
     }
 
 }

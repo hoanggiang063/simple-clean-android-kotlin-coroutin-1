@@ -8,9 +8,8 @@ import com.architecture.business.demo.repository.ToDoRepository
 class ToDoUseCaseImpl(bankRepository: ToDoRepository) :
     ToDoUseCase, BaseUsecaseImpl<Int, ToDoInfo, ToDoCallBack>(bankRepository) {
 
-    override suspend fun getData(): ToDoInfo {
-        var repo = bankRepository as ToDoRepository
-        return repo.getToDo(bankRepository.getParam())
+    override fun hanldeExceptionByChild(error: Throwable, callback: ToDoCallBack): Boolean {
+        return false;
     }
 
 }
