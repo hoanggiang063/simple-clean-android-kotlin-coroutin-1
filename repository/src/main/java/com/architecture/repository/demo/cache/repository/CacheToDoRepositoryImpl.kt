@@ -2,8 +2,8 @@ package com.architecture.repository.demo.repository
 
 import android.util.Log
 import com.architecture.business.core.exception.BusinessException
-import com.architecture.business.demo.info.ToDoInfo
-import com.architecture.business.demo.repository.ToDoRepository
+import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
+import com.architecture.cleanmvvm.node1.demo.repository.ToDoRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

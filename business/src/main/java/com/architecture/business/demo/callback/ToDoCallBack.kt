@@ -1,7 +1,7 @@
-package com.architecture.business.demo.callback
+package com.architecture.cleanmvvm.node1.demo.callback
 
 import com.architecture.business.core.callback.BasePresentCallBack
-import com.architecture.business.demo.info.ToDoInfo
+import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
 
 interface ToDoCallBack : BasePresentCallBack<ToDoInfo> {
     override fun onSuccess(expectedResult: ToDoInfo?)

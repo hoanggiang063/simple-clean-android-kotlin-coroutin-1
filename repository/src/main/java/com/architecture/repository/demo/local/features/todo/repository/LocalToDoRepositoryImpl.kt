@@ -1,8 +1,8 @@
 package com.architecture.repository.demo.repository
 
 import android.util.Log
-import com.architecture.business.demo.info.ToDoInfo
-import com.architecture.business.demo.repository.ToDoRepository
+import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
+import com.architecture.cleanmvvm.node1.demo.repository.ToDoRepository
 import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
 import com.architecture.repository.demo.mapper.LocalTodoMapper
 import com.architecture.repository.demo.model.ToDoDao

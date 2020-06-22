@@ -1,14 +1,16 @@
-package com.architecture.cleanmvvm
+package com.architecture.cleanmvvm.core.view
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.architecture.business.demo.callback.ToDoCallBack
-import com.architecture.business.demo.info.ToDoInfo
-import com.architecture.business.demo.repository.ToDoRepository
-import com.architecture.business.demo.usecase.ToDoUseCase
-import com.architecture.business.demo.usecase.ToDoUseCaseImpl
+import com.architecture.cleanmvvm.R
+import com.architecture.cleanmvvm.node1.demo.callback.ToDoCallBack
+import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
+import com.architecture.cleanmvvm.node1.demo.repository.ToDoRepository
+import com.architecture.cleanmvvm.node1.demo.usecase.ToDoUseCase
+import com.architecture.cleanmvvm.node1.demo.usecase.ToDoUseCaseImpl
 import com.architecture.repository.demo.local.features.todo.service.AppDatabase
 import com.architecture.repository.demo.repository.CacheToDoRepositoryImpl
 import com.architecture.repository.demo.repository.LocalToDoRepositoryImpl
@@ -118,6 +120,8 @@ class MainActivity : AppCompatActivity() {
             })
 
         }
+        val intent: Intent = Intent()
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
 
 

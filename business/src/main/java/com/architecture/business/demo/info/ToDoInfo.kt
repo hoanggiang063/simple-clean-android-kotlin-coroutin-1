@@ -1,4 +1,4 @@
-package com.architecture.business.demo.info
+package com.architecture.cleanmvvm.node1.demo.info
 
 data class ToDoInfo(
     var id: Int = 0,

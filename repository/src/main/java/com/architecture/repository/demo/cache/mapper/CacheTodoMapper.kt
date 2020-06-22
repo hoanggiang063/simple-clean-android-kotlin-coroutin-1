@@ -1,6 +1,6 @@
 package com.architecture.repository.demo.mapper
 
-import com.architecture.business.demo.info.ToDoInfo
+import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
 import com.architecture.repository.core.mapper.BaseInfoMapper
 import com.architecture.repository.demo.model.TodoEntity
 

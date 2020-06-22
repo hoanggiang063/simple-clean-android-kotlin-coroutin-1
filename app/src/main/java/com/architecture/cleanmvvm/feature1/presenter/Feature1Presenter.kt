@@ -1,0 +1,3 @@
+package com.architecture.cleanmvvm.feature1.presenter
+
+interface Feature1Presenter
