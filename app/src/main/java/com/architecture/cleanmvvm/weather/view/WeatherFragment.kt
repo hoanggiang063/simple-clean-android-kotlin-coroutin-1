@@ -6,13 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.architecture.cleanmvvm.R
+import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.weather.viewmodel.WeatherViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class WeatherFragment : Fragment() {
 
     private val viewModel: WeatherViewModel by viewModel()
+
+    private
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,12 +32,19 @@ class WeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val nameObserver = Observer<List<WeatherInfo>> { newName ->
+
+        }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        model.currentName.observe(this, nameObserver)
+
         loadScreenData()
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun loadScreenData() {
-        TODO("Not yet implemented")
+        // do nothing
     }
 
     fun showGenericError(error: String) {
