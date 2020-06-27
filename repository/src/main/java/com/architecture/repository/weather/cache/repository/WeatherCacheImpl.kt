@@ -2,33 +2,31 @@ package com.architecture.repository.demo.repository
 
 import android.util.Log
 import com.architecture.business.core.exception.BusinessException
-import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
-import com.architecture.cleanmvvm.node1.demo.repository.ToDoRepository
+import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
+import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
+import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
+import com.architecture.repository.core.model.Undefine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 
 class WeatherCacheImpl(
     val forceRefresh: Boolean,
-    val localDataGetting: LocalToDoRepositoryImpl,
-    val remoteDataGetting: RemoteToDoRepositoryImpl
-) : ToDoRepository {
+    val localDataGetting: WeatherLocalImpl,
+    val remoteDataGetting: WeatherRemoteImpl
+) : WeatherRepository {
 
-    var mParam: Int = 0;
-
-    fun shouldFetch(data: ToDoInfo?): Boolean {
-        return data == null || forceRefresh
+    fun shouldFetch(data: WeatherInfo?): Boolean {
+        return data == null || Undefine.UNDEFINE_STRING.equals(data.id) || forceRefresh
     }
 
-    override fun setParam(param: Int) {
-        mParam = param
-        localDataGetting.setParam(mParam)
-        remoteDataGetting.setParam(mParam)
+    override fun setParam(param: WeatherRequest) {
+        localDataGetting.setParam(param)
+        remoteDataGetting.setParam(param)
     }
 
-    override suspend fun invoke(): ToDoInfo {
-        var result: ToDoInfo? = null;
+    override suspend fun invoke(): WeatherInfo {
+        var result: WeatherInfo? = null;
         try {
             result = localDataGetting()
         } catch (exception: Throwable) {
@@ -38,19 +36,18 @@ class WeatherCacheImpl(
         if (shouldFetch(result)) {
 
             CoroutineScope(Dispatchers.Default).async {
-                delay(4000) //for show showloading dialog
                 result = remoteDataGetting()
             }.await()
 
             result?.let {
-                localDataGetting.saveTodo(result!!)
+                localDataGetting.saveWeather(result!!)
                 result = localDataGetting()
             }
 
         }
 
         result?.let {
-            return result as ToDoInfo
+            return result as WeatherInfo
         }
 
         throw BusinessException();
