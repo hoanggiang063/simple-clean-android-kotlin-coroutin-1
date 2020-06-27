@@ -20,6 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+
+        main {
+            res.srcDirs = [
+                    'src/main/res-screens/common',
+                    'src/main/res-screens/weather',
+            ]
+        }
+    }
 }
 
 dependencies {
@@ -37,6 +47,7 @@ dependencies {
 
     implementation project(':business')
     implementation project(':repository')
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
