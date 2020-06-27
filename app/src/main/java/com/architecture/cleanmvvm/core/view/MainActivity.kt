@@ -1,28 +1,7 @@
 package com.architecture.cleanmvvm.core.view
 
-import android.app.ProgressDialog
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import com.architecture.cleanmvvm.R
-import com.architecture.cleanmvvm.node1.demo.callback.ToDoCallBack
-import com.architecture.cleanmvvm.node1.demo.info.ToDoInfo
-import com.architecture.cleanmvvm.node1.demo.repository.ToDoRepository
-import com.architecture.cleanmvvm.node1.demo.usecase.ToDoUseCase
-import com.architecture.cleanmvvm.node1.demo.usecase.ToDoUseCaseImpl
-import com.architecture.repository.demo.local.features.todo.service.AppDatabase
-import com.architecture.repository.demo.repository.CacheToDoRepositoryImpl
-import com.architecture.repository.demo.repository.LocalToDoRepositoryImpl
-import com.architecture.repository.demo.repository.RemoteToDoRepositoryImpl
-import com.architecture.repository.demo.service.Webservice
-import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +9,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hostFragment();
-
+        //hostFragment();
+    }
 //        setContentView(R.layout.activity_main)
 //
 //        var toDoRepository: ToDoRepository =
@@ -126,33 +105,33 @@ class MainActivity : AppCompatActivity() {
 //        }
 //        val intent: Intent = Intent()
 //        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-    }
+//    }
+//
+//    private fun hostFragment(fragment: BaseFragment){
+//        if(supportFragmentManager.findFragmentByTag(fragment.javaClass.simpleName)==null){
+//            var fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.container,fragment.getInstance(),fragment.javaClass.simpleName)
+//            fragmentTransaction.commit()
+//        }
+//    }
+//}
 
-    private fun hostFragment(fragment: BaseFragment){
-        if(supportFragmentManager.findFragmentByTag(fragment.javaClass.simpleName)==null){
-            var fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container,fragment.getInstance(),fragment.javaClass.simpleName)
-            fragmentTransaction.commit()
-        }
-    }
-}
-
-object RetrofitFactory {
-    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
-
-    fun makeRetrofitService(): Webservice {
-
-
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(
-                OkHttpClient.Builder().addInterceptor(
-                    HttpLoggingInterceptor()
-                        .setLevel(HttpLoggingInterceptor.Level.BODY)
-                ).build()
-            )
-            .addConverterFactory(MoshiConverterFactory.create())
-            .build().create(Webservice::class.java)
-    }
+//object RetrofitFactory {
+//    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+//
+//    fun makeRetrofitService(): Webservice {
+//
+//
+//        return Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .client(
+//                OkHttpClient.Builder().addInterceptor(
+//                    HttpLoggingInterceptor()
+//                        .setLevel(HttpLoggingInterceptor.Level.BODY)
+//                ).build()
+//            )
+//            .addConverterFactory(MoshiConverterFactory.create())
+//            .build().create(Webservice::class.java)
+//    }
 
 }

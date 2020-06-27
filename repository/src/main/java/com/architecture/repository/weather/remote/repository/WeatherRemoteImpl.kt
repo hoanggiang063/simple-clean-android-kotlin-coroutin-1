@@ -54,7 +54,6 @@ class RemoteMapper {
         val itemInfo = emptyList<WeatherItemInfo>()
         list.forEach { inItem ->
             val outItem = WeatherItemInfo()
-            outItem.id = 0;
             outItem.pressure = inItem.pressure
             outItem.temperature = inItem.temp.eve
             outItem.description = getItemDescription(inItem.weather)
