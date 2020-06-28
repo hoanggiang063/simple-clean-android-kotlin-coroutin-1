@@ -12,7 +12,7 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
     var subscriberContext: CoroutineContext = Dispatchers.IO
     var observerContext: CoroutineContext = Dispatchers.Main
 
-    override fun buildUseCase(param: Param): BaseUsecaseImpl<Param, Result, CallBack> {
+    override fun buildUseCase(param: Param): BaseUseCase<Param, Result, CallBack> {
         bankRepository.setParam(param)
         return this
     }
