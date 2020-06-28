@@ -5,7 +5,7 @@ import com.architecture.business.core.usecase.BaseUseCase
 import com.architecture.cleanmvvm.node1.demo.callback.WeatherCallBack
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 
-interface WeatherUseCase : BaseUseCase<WeatherRequest, WeatherInfo, WeatherCallBack>
+interface WeatherUseCase : BaseUseCase<WeatherRequest, WeatherInfo, WeatherCallBack<WeatherInfo>>
 
 data class WeatherRequest(
     var city: String = Undefine.UNDEFINE_STRING,

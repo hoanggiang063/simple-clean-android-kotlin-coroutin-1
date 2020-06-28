@@ -8,9 +8,9 @@ import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 
 class WeatherUseCaseImpl(weatherRepository: WeatherRepository) :
     WeatherUseCase,
-    BaseUsecaseImpl<WeatherRequest, WeatherInfo, WeatherCallBack>(weatherRepository) {
+    BaseUsecaseImpl<WeatherRequest, WeatherInfo, WeatherCallBack<WeatherInfo>>(weatherRepository) {
 
-    override fun handleExceptionByChild(error: Throwable, callback: WeatherCallBack): Boolean {
+    override fun handleExceptionByChild(error: Throwable, callback: WeatherCallBack<WeatherInfo>): Boolean {
         if (error is BusinessException) {
             callback.onCityNotFound(error)
             return true

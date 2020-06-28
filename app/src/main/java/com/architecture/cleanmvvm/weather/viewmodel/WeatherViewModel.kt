@@ -33,7 +33,7 @@ class WeatherViewModel(val weatherUseCase: WeatherUseCase) : ViewModel() {
         request.numberDays = 7
         weatherUseCase
             .buildUseCase(request)
-            .invoke(object : WeatherCallBack {
+            .invoke(object : WeatherCallBack<Any?> {
                 override fun onCityNotFound(exception: BusinessException) {
                     _failedByBusiness.value = exception
                 }

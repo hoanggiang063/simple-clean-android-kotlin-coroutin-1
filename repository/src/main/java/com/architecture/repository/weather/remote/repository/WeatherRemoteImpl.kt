@@ -1,6 +1,5 @@
 package com.architecture.repository.demo.repository
 
-import android.util.Log
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
@@ -30,7 +29,6 @@ class WeatherRemoteImpl(var service: WeatherRemoteService) : WeatherRepository {
                 )
             )
         } catch (error: Throwable) {
-            Log.e("vhgiang", "remote error:" + error?.printStackTrace())
             throw BaseExceptionMapperImpl().transform(error)
         }
     }
