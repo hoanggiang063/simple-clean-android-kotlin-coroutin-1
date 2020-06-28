@@ -2,8 +2,6 @@ package com.architecture.cleanmvvm
 
 import android.app.Application
 import com.architecture.cleanmvvm.core.di.appComponent
-import com.architecture.repository.weather.local.service.WeatherDatabase
-import org.jetbrains.anko.doAsync
 import org.koin.android.ext.android.startKoin
 
 open class CleanApp : Application() {

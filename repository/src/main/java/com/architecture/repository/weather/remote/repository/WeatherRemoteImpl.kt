@@ -1,14 +1,14 @@
-package com.architecture.repository.demo.repository
+package com.architecture.repository.weather.remote.repository
 
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
 import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
-import com.architecture.repository.demo.service.WeatherRemoteService
 import com.architecture.repository.weather.remote.model.ForeCast
 import com.architecture.repository.weather.remote.model.Weather
 import com.architecture.repository.weather.remote.model.WeatherModel
+import com.architecture.repository.weather.remote.service.WeatherRemoteService
 
 class WeatherRemoteImpl(var service: WeatherRemoteService) : WeatherRepository {
 
@@ -43,10 +43,10 @@ class RemoteMapper {
         weatherInfo.lat = input.city.coord.lat
         weatherInfo.long = input.city.coord.lon
         weatherInfo.timeZone = input.city.timeZone
-        input.list?.let {
+        input.list.let {
             weatherInfo.foreCastItems = transformItem(input.list)
         }
-        return weatherInfo;
+        return weatherInfo
     }
 
     private fun transformItem(list: List<ForeCast>): List<WeatherItemInfo> {
@@ -64,11 +64,11 @@ class RemoteMapper {
     }
 
     private fun getItemDescription(weather: List<Weather>): String {
-        var totalDescription: String = ""
+        var totalDescription = ""
         weather.forEach { item ->
             totalDescription += item.description
         }
-        return totalDescription;
+        return totalDescription
     }
 
 }

@@ -1,12 +1,10 @@
-package com.architecture.repository.demo.repository
+package com.architecture.repository.weather.local.repository
 
-import android.util.Log
 import com.architecture.business.core.exception.BusinessException
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
-import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
 import com.architecture.repository.core.mapper.BaseInfoMapper
 import com.architecture.repository.weather.local.model.WeatherEntity
 import com.architecture.repository.weather.local.model.WeatherItemEntity
@@ -27,16 +25,19 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
             if (weatherWithDetails.isNotEmpty()) {
                 return WeatherMapper().transform(weatherWithDetails)
             } else {
-                val businessException = BusinessException()
-                businessException.businessCode = BusinessException.DEFAULT_DB_ERROR_CODE
-                businessException.businessMessage = BusinessException.DEFAULT_DB_ERROR_MESSAGE
-                throw businessException
+                throw getException()
             }
 
         } catch (exception: Throwable) {
-            Log.e("vhgiang", "local db error: " + exception.message)
-            throw BaseExceptionMapperImpl().transform(exception)
+            throw getException()
         }
+    }
+
+    private fun getException(): BusinessException {
+        val businessException = BusinessException()
+        businessException.businessCode = BusinessException.DEFAULT_DB_ERROR_CODE
+        businessException.businessMessage = BusinessException.DEFAULT_DB_ERROR_MESSAGE
+        return businessException
     }
 
     suspend fun saveWeather(

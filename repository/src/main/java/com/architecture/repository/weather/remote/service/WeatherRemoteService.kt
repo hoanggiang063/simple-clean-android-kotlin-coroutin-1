@@ -1,10 +1,8 @@
-package com.architecture.repository.demo.service
+package com.architecture.repository.weather.remote.service
 
-import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.repository.weather.remote.model.WeatherModel
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 interface WeatherRemoteService {
     @GET("/data/2.5/forecast/daily")

@@ -1,17 +1,18 @@
-package com.architecture.repository.demo.repository
+package com.architecture.repository.weather.cache.repository
 
-import android.util.Log
 import com.architecture.business.core.exception.BusinessException
 import com.architecture.business.core.info.Undefine
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
+import com.architecture.repository.weather.local.repository.WeatherLocalImpl
+import com.architecture.repository.weather.remote.repository.WeatherRemoteImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 
 class WeatherCacheImpl(
-    val forceRefresh: Boolean,
+    var forceRefresh: Boolean,
     val localDataGetting: WeatherLocalImpl,
     val remoteDataGetting: WeatherRemoteImpl
 
@@ -34,7 +35,7 @@ class WeatherCacheImpl(
         try {
             result = localDataGetting()
         } catch (exception: Throwable) {
-            Log.e("vhgiang: db not found", exception.toString())
+            // don't have data and fetch data
         }
 
         if (shouldFetch(result)) {
@@ -55,7 +56,6 @@ class WeatherCacheImpl(
         val businessException = BusinessException()
         businessException.businessCode = BusinessException.DEFAULT_DB_ERROR_CODE
         businessException.businessMessage = BusinessException.DEFAULT_DB_ERROR_MESSAGE
-
         throw businessException
     }
 
