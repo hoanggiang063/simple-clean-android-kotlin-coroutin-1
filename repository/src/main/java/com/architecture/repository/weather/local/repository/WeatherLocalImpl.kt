@@ -1,13 +1,13 @@
 package com.architecture.repository.demo.repository
 
 import android.util.Log
+import com.architecture.business.core.exception.BusinessException
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
 import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
 import com.architecture.repository.core.mapper.BaseInfoMapper
-import com.architecture.repository.weather.local.model.ItemNotFound
 import com.architecture.repository.weather.local.model.WeatherEntity
 import com.architecture.repository.weather.local.model.WeatherItemEntity
 import com.architecture.repository.weather.local.model.WeatherWithDetail
@@ -15,23 +15,26 @@ import com.architecture.repository.weather.local.service.WeatherDao
 
 class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
 
-    var request: WeatherRequest? = null;
+    var request: WeatherRequest? = null
 
     override fun setParam(param: WeatherRequest) {
-        request = param;
+        request = param
     }
 
     override suspend fun invoke(): WeatherInfo {
         try {
-            var weatherWithDetails = dao.getWeatherWithFullDetail(request!!.city);
-            if (weatherWithDetails != null && weatherWithDetails.isNotEmpty()) {
+            val weatherWithDetails = dao.getWeatherWithFullDetail(request!!.city)
+            if (weatherWithDetails.isNotEmpty()) {
                 return WeatherMapper().transform(weatherWithDetails)
             } else {
-                throw ItemNotFound()
+                val businessException = BusinessException()
+                businessException.businessCode = BusinessException.DEFAULT_DB_ERROR_CODE
+                businessException.businessMessage = BusinessException.DEFAULT_DB_ERROR_MESSAGE
+                throw businessException
             }
 
         } catch (exception: Throwable) {
-            Log.e("vhgiang", "local db error: " + exception?.message)
+            Log.e("vhgiang", "local db error: " + exception.message)
             throw BaseExceptionMapperImpl().transform(exception)
         }
     }
@@ -43,7 +46,7 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
         val weatherEntity = WeatherMapper().revertWeather(weatherInfo)
         weatherEntity.searchKey = request.city
         dao.saveWeather(weatherEntity)
-        val weatherItems = WeatherMapper().revertWeatherItem(weatherInfo.foreCastItems);
+        val weatherItems = WeatherMapper().revertWeatherItem(weatherInfo.foreCastItems)
         weatherItems.forEach { item ->
             item.id = item.date.toInt()
             item.parentId = weatherInfo.id
@@ -55,9 +58,9 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
 
 class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
     override fun transform(input: List<WeatherWithDetail>): WeatherInfo {
-        val weatherInfo = WeatherInfo();
+        val weatherInfo = WeatherInfo()
         if (input.isNotEmpty()) {
-            weatherInfo.id = input[0].weather.id;
+            weatherInfo.id = input[0].weather.id
             weatherInfo.timeZone = input[0].weather.timeZone
             weatherInfo.long = input[0].weather.long
             weatherInfo.lat = input[0].weather.lat
@@ -65,13 +68,13 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
             weatherInfo.cityName = input[0].weather.cityName
             weatherInfo.foreCastItems = getWeatherItem(input[0].items)
         }
-        return weatherInfo;
+        return weatherInfo
     }
 
     private fun getWeatherItem(items: List<WeatherItemEntity>): List<WeatherItemInfo>? {
         val outList = mutableListOf<WeatherItemInfo>()
         items.forEach { inItem ->
-            val outItem = WeatherItemInfo();
+            val outItem = WeatherItemInfo()
             outItem.id = inItem.id
             outItem.description = inItem.description
             outItem.temperature = inItem.temperature
@@ -84,7 +87,7 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
     }
 
     fun revertWeather(input: WeatherInfo): WeatherEntity {
-        var weatherEntity: WeatherEntity = WeatherEntity()
+        val weatherEntity = WeatherEntity()
 
         weatherEntity.id = input.id
         weatherEntity.lat = input.lat
@@ -99,7 +102,7 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
     fun revertWeatherItem(items: List<WeatherItemInfo>?): List<WeatherItemEntity> {
         val outList = mutableListOf<WeatherItemEntity>()
         items?.forEach { inItem ->
-            val outItem = WeatherItemEntity();
+            val outItem = WeatherItemEntity()
             outItem.id = inItem.id
             outItem.description = inItem.description
             outItem.temperature = inItem.temperature

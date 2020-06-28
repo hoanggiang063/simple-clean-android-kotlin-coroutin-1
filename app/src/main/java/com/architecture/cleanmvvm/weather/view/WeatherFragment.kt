@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.architecture.business.core.exception.BusinessException
 import com.architecture.cleanmvvm.R
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.weather.viewmodel.WeatherViewModel
@@ -20,20 +21,19 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class WeatherFragment : Fragment() {
 
-    val searchView: SearchView by lazy {
+    private val searchView: SearchView by lazy {
         view!!.findViewById<SearchView>(R.id.searchView)
     }
 
-    val btnGetWeather: AppCompatButton by lazy {
+    private val btnGetWeather: AppCompatButton by lazy {
         view!!.findViewById<AppCompatButton>(R.id.btnGetWeather)
     }
 
-    val recyclerForeCast: RecyclerView by lazy {
+    private val recyclerForeCast: RecyclerView by lazy {
         view!!.findViewById<RecyclerView>(R.id.recyclerForeCast)
     }
 
     private val viewModel: WeatherViewModel by viewModel()
-
     private lateinit var weatherAdapter: WeatherAdapter
 
     override fun onCreateView(
@@ -49,7 +49,14 @@ class WeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        weatherAdapter = WeatherAdapter();
+        setUpListView()
+        listenSuccessData()
+        btnGetWeather.setOnClickListener { loadScreenData() }
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setUpListView() {
+        weatherAdapter = WeatherAdapter()
         recyclerForeCast.layoutManager = LinearLayoutManager(context)
         recyclerForeCast.addItemDecoration(
             DividerItemDecoration(
@@ -58,26 +65,49 @@ class WeatherFragment : Fragment() {
             )
         )
         recyclerForeCast.adapter = weatherAdapter
+    }
 
+    private fun listenSuccessData() {
         val dataObserver = Observer<WeatherInfo> { data ->
             data.foreCastItems?.let {
-                weatherAdapter.info.clear();
+                weatherAdapter.info.clear()
                 weatherAdapter.info.addAll(data.foreCastItems!!)
-                weatherAdapter.notifyDataSetChanged();
+                weatherAdapter.notifyDataSetChanged()
             }
 
         }
-
-        val failObserver = Observer<Throwable> { data ->
-            showGenericError("Something went wrong or city not found")
-            weatherAdapter.info.clear();
-            weatherAdapter.notifyDataSetChanged();
-        }
-
         viewModel.currentWeatherInfo.observe(this, dataObserver)
-        viewModel.failedException.observe(this, failObserver)
-        btnGetWeather.setOnClickListener { loadScreenData() }
-        super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun listenFailData() {
+        val failDefaultObserver = Observer<Throwable> { data ->
+            showError(getString(R.string.defaultFailMessage))
+            weatherAdapter.info.clear()
+            weatherAdapter.notifyDataSetChanged()
+        }
+        viewModel.failedException.observe(this, failDefaultObserver)
+
+        val failTechnicalObserver = Observer<Throwable> { data ->
+            showError(getString(R.string.technicalFailMessage))
+            weatherAdapter.info.clear()
+            weatherAdapter.notifyDataSetChanged()
+        }
+        viewModel.failedByTechnical.observe(this, failTechnicalObserver)
+
+        val failByBusinessObserver = Observer<Throwable> { data ->
+            val businessException = data as BusinessException
+            val textMessage = getString(R.string.businessFailMessage)
+            showError(
+                String.format(
+                    textMessage,
+                    businessException.businessCode,
+                    businessException.businessMessage
+                )
+            )
+            weatherAdapter.info.clear()
+            weatherAdapter.notifyDataSetChanged()
+        }
+        viewModel.failedByBusiness.observe(this, failByBusinessObserver)
     }
 
     private fun loadScreenData() {
@@ -87,11 +117,7 @@ class WeatherFragment : Fragment() {
 
     }
 
-    private fun showGenericError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showTechnicalError(error: String) {
+    private fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 

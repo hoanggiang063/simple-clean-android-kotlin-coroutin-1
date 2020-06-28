@@ -1,16 +1,13 @@
 package com.architecture.cleanmvvm.weather.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.architecture.cleanmvvm.R
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
-import com.architecture.repository.weather.local.service.WeatherDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -18,7 +15,7 @@ import kotlin.math.roundToInt
 class WeatherAdapter() :
     RecyclerView.Adapter<WeatherViewHolder>() {
 
-    var info: MutableList<WeatherItemInfo> = mutableListOf<WeatherItemInfo>();
+    val info: MutableList<WeatherItemInfo> = mutableListOf<WeatherItemInfo>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WeatherViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.view_weather_item, parent, false)
@@ -34,39 +31,40 @@ class WeatherViewHolder(val parent: View) : RecyclerView.ViewHolder(parent) {
     companion object {
         const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy"
     }
+
     val tvWeatherDate: AppCompatTextView by lazy {
-        parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherDate)
+        parent.findViewById<AppCompatTextView>(R.id.tvWeatherDate)
     }
 
     val tvWeatherTemperature: AppCompatTextView by lazy {
-        parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherTemperature)
+        parent.findViewById<AppCompatTextView>(R.id.tvWeatherTemperature)
     }
 
     val tvWeatherPressure: AppCompatTextView by lazy {
-        parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherPressure)
+        parent.findViewById<AppCompatTextView>(R.id.tvWeatherPressure)
     }
 
     val tvWeatherHumidity: AppCompatTextView by lazy {
-        parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherHumidity)
+        parent.findViewById<AppCompatTextView>(R.id.tvWeatherHumidity)
     }
 
     val tvWeatherDescription: AppCompatTextView by lazy {
-        parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherDescription)
+        parent.findViewById<AppCompatTextView>(R.id.tvWeatherDescription)
     }
 
     val tvWeatherContainer: LinearLayoutCompat by lazy {
-        parent!!.findViewById<LinearLayoutCompat>(R.id.lnWeatherContainer)
+        parent.findViewById<LinearLayoutCompat>(R.id.lnWeatherContainer)
     }
 
     fun bindTo(item: WeatherItemInfo) {
 
 
-        var simpleDateFormat = SimpleDateFormat(DATE_TIME_FORMAT)
+        val simpleDateFormat = SimpleDateFormat(DATE_TIME_FORMAT, Locale.US)
         simpleDateFormat.timeZone = TimeZone.getDefault()
 
         val date: String = String.format(
             parent.context.getString(R.string.weatherItemDate),
-            simpleDateFormat.format(Date(item.date *1000))
+            simpleDateFormat.format(Date(item.date * 1000))
         )
         tvWeatherDate.text = date
 

@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 class ErrorModel {
     var httpCode = 0
 
-    @SerializedName("errorCode")
+    @SerializedName("cod")
     var errorCode: String? = null
 
-    @SerializedName("errorMessage")
+    @SerializedName("message")
     var errorMessage: String? = null
 }

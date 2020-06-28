@@ -26,19 +26,18 @@ class WeatherCacheImpl(
     override fun setParam(param: WeatherRequest) {
         localDataGetting.setParam(param)
         remoteDataGetting.setParam(param)
-        request = param;
+        request = param
     }
 
     override suspend fun invoke(): WeatherInfo {
-        var result: WeatherInfo? = null;
+        var result: WeatherInfo? = null
         try {
             result = localDataGetting()
         } catch (exception: Throwable) {
-            Log.e("vhgiang: db not found", exception?.toString())
+            Log.e("vhgiang: db not found", exception.toString())
         }
 
         if (shouldFetch(result)) {
-
             CoroutineScope(Dispatchers.Default).async {
                 result = remoteDataGetting()
             }.await()
@@ -47,14 +46,17 @@ class WeatherCacheImpl(
                 localDataGetting.saveWeather(result!!, request)
                 result = localDataGetting()
             }
-
         }
 
         result?.let {
             return result as WeatherInfo
         }
 
-        throw BusinessException();
+        val businessException = BusinessException()
+        businessException.businessCode = BusinessException.DEFAULT_DB_ERROR_CODE
+        businessException.businessMessage = BusinessException.DEFAULT_DB_ERROR_MESSAGE
+
+        throw businessException
     }
 
 }

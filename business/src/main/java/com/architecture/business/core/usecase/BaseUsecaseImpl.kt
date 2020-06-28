@@ -1,6 +1,7 @@
 package com.architecture.business.core.usecase
 
 import com.architecture.business.core.callback.BasePresentCallBack
+import com.architecture.business.core.exception.TechnicalException
 import com.architecture.business.core.repository.BaseRepository
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -19,9 +20,8 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
     override fun invoke(callback: CallBack): Job {
         return CoroutineScope(subscriberContext).launch {
             // implement thread to call
-            var data: Result?
-
             try {
+                var data: Result?
                 data = bankRepository()
                 withContext(observerContext) {
                     handleSuccess(data, callback)
@@ -41,18 +41,19 @@ abstract class BaseUsecaseImpl<Param, Result, CallBack : BasePresentCallBack<Res
     }
 
     private fun handleFail(error: Throwable, callback: CallBack) {
-
-        if (!hanldeExceptionByChild(error, callback)) {
+        if (!handleExceptionByChild(error, callback)) {
             handleExceptionByGeneric(error, callback)
-        } else {
-            callback.onFail(error)
         }
     }
 
-    abstract fun hanldeExceptionByChild(error: Throwable, callback: CallBack): Boolean
+    abstract fun handleExceptionByChild(error: Throwable, callback: CallBack): Boolean
 
     open fun handleExceptionByGeneric(error: Throwable, callback: CallBack) {
-        callback.onFail(error)
+        if (error is TechnicalException)
+            callback.onFailByTechnical(error)
+        else {
+            callback.onDefaultFail(error)
+        }
     }
 }
 

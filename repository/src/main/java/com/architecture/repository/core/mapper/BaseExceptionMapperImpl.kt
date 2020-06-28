@@ -18,30 +18,26 @@ open class BaseExceptionMapperImpl : ExceptionMapper {
     override fun transform(input: Throwable?): BaseException {
         return when (input) {
             null -> UnknownException()
-
             is IOException -> TechnicalException()
-
             is HttpException -> {
-                var exception = input as HttpException
-                filterException(exception)
+                filterException(input)
             }
             else -> UnknownException()
         }
     }
 
-    fun filterException(exception: HttpException): BaseException {
+    private fun filterException(exception: HttpException): BaseException {
         var result: BaseException = TechnicalException()
-
         if (isBusinessException(exception)) {
-            var value = exception.response()?.errorBody()
+            val value = exception.response()?.errorBody()
 
             value?.let {
-                var errorModel = Gson().fromJson<ErrorModel>(
+                val errorModel = Gson().fromJson<ErrorModel>(
                     getStringFromResponseBody(value),
                     ErrorModel::class.java
                 )
 
-                var business = BusinessException()
+                val business = BusinessException()
                 business.businessCode = errorModel.errorCode
                 business.businessMessage = errorModel.errorMessage
 
@@ -52,15 +48,15 @@ open class BaseExceptionMapperImpl : ExceptionMapper {
         result.mCode = exception.code().toString()
         result.mMessage = exception.message()
 
-        return result;
+        return result
     }
 
-    fun isBusinessException(exception: HttpException): Boolean {
-        return HttpStatus.BAD_REQUEST.value() == exception.response()?.code() &&
-                exception.response()?.body() != null
+    private fun isBusinessException(exception: HttpException): Boolean {
+        return HttpStatus.BAD_REQUEST.value() == exception.response()?.code() ||
+                HttpStatus.NOT_FOUND.value() == exception.response()?.code()
     }
 
-    fun getStringFromResponseBody(responseBody: ResponseBody): String? {
+    private fun getStringFromResponseBody(responseBody: ResponseBody): String? {
         var reader: BufferedReader? = null
         val sb = StringBuilder()
         try {

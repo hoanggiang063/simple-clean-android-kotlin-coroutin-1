@@ -8,4 +8,8 @@
     <string name="weatherItemPressure">Pressure: %s</string>
     <string name="weatherItemHumidity">Humidity: %s</string>
     <string name="weatherItemDescription">Description: %s</string>
+
+    <string name="defaultFailMessage">Something went wrong!</string>
+    <string name="technicalFailMessage">Something went wrong please check IO connection</string>
+    <string name="businessFailMessage">Fail by load data, Error: %s, reason: %s</string>
 </resources>

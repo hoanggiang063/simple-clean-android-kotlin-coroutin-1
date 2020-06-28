@@ -20,7 +20,6 @@ abstract class WeatherDatabase : RoomDatabase() {
             Room.databaseBuilder(context.applicationContext, WeatherDatabase::class.java, DB_NAME)
                 .build()
     }
-
     // DAO
     abstract fun weatherDao(): WeatherDao
 }
