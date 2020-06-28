@@ -18,6 +18,7 @@
         android:layout_height="@dimen/weatherButtonHeight"
         android:layout_marginTop="@dimen/weatherDefaultPadding"
         android:layout_marginBottom="@dimen/weatherDefaultPadding"
+        android:contentDescription="@string/btnGetWeather"
         android:text="@string/btnGetWeather" />
 
     <androidx.recyclerview.widget.RecyclerView

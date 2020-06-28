@@ -1,6 +1,9 @@
 package com.architecture.cleanmvvm.core.view
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -22,5 +25,19 @@ class MainActivity : AppCompatActivity() {
             fragmentTransaction.replace(R.id.container, fragment, fragment.javaClass.simpleName)
             fragmentTransaction.commit()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val configuration = Configuration(newConfig)
+        adjustFontScale(configuration)
+    }
+
+    private fun adjustFontScale(configuration: Configuration) {
+        val metrics = resources.displayMetrics
+        val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.defaultDisplay.getMetrics(metrics)
+        metrics.scaledDensity = configuration.fontScale * metrics.density
+        baseContext.resources.updateConfiguration(configuration, metrics)
     }
 }

@@ -1,6 +1,7 @@
 package com.architecture.cleanmvvm.weather.view
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,10 @@ import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.weather.viewmodel.WeatherViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
-
 class WeatherFragment : Fragment() {
+    companion object {
+        const val SEARCH_MIN_CHARACTER_LIMIT = 3
+    }
 
     private val searchView: SearchView by lazy {
         view!!.findViewById<SearchView>(R.id.searchView)
@@ -34,7 +37,10 @@ class WeatherFragment : Fragment() {
     }
 
     private val viewModel: WeatherViewModel by viewModel()
+
     private lateinit var weatherAdapter: WeatherAdapter
+
+    private val lastClickTime: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +57,19 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpListView()
         listenSuccessData()
-        btnGetWeather.setOnClickListener { loadScreenData() }
+        listenFailData()
+        btnGetWeather.setOnClickListener {
+            clearScreenData()
+            if (isValidToLoadData()) {
+                loadScreenData()
+            }
+        }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun isValidToLoadData(): Boolean {
+        return (searchView.query.length >= SEARCH_MIN_CHARACTER_LIMIT) &&
+                (SystemClock.elapsedRealtime() - lastClickTime > 1000)
     }
 
     private fun setUpListView() {
@@ -82,15 +99,13 @@ class WeatherFragment : Fragment() {
     private fun listenFailData() {
         val failDefaultObserver = Observer<Throwable> { data ->
             showError(getString(R.string.defaultFailMessage))
-            weatherAdapter.info.clear()
-            weatherAdapter.notifyDataSetChanged()
+            clearScreenData()
         }
         viewModel.failedException.observe(this, failDefaultObserver)
 
         val failTechnicalObserver = Observer<Throwable> { data ->
             showError(getString(R.string.technicalFailMessage))
-            weatherAdapter.info.clear()
-            weatherAdapter.notifyDataSetChanged()
+            clearScreenData()
         }
         viewModel.failedByTechnical.observe(this, failTechnicalObserver)
 
@@ -104,8 +119,7 @@ class WeatherFragment : Fragment() {
                     businessException.businessMessage
                 )
             )
-            weatherAdapter.info.clear()
-            weatherAdapter.notifyDataSetChanged()
+            clearScreenData()
         }
         viewModel.failedByBusiness.observe(this, failByBusinessObserver)
     }
@@ -119,6 +133,11 @@ class WeatherFragment : Fragment() {
 
     private fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+    }
+
+    private fun clearScreenData() {
+        weatherAdapter.info.clear()
+        weatherAdapter.notifyDataSetChanged()
     }
 
 }
