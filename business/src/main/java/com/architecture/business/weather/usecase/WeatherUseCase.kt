@@ -11,5 +11,5 @@ data class WeatherRequest(
     var city: String = Undefine.UNDEFINE_STRING,
     var numberDays: Int = Undefine.UNDEFINE_INT,
     var appId: String = Undefine.UNDEFINE_STRING,
-    var unit: String = Undefine.UNDEFINE_STRING
+    var unit: String = Undefine.DEFAULT_TEMP_UNIT
 )

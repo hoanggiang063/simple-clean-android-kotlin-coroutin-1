@@ -2,10 +2,10 @@ package com.architecture.repository.demo.repository
 
 import android.util.Log
 import com.architecture.business.core.exception.BusinessException
+import com.architecture.business.core.info.Undefine
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
-import com.architecture.repository.core.model.Undefine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -14,7 +14,10 @@ class WeatherCacheImpl(
     val forceRefresh: Boolean,
     val localDataGetting: WeatherLocalImpl,
     val remoteDataGetting: WeatherRemoteImpl
+
 ) : WeatherRepository {
+
+    private lateinit var request: WeatherRequest
 
     fun shouldFetch(data: WeatherInfo?): Boolean {
         return data == null || Undefine.UNDEFINE_STRING.equals(data.id) || forceRefresh
@@ -23,6 +26,7 @@ class WeatherCacheImpl(
     override fun setParam(param: WeatherRequest) {
         localDataGetting.setParam(param)
         remoteDataGetting.setParam(param)
+        request = param;
     }
 
     override suspend fun invoke(): WeatherInfo {
@@ -30,7 +34,7 @@ class WeatherCacheImpl(
         try {
             result = localDataGetting()
         } catch (exception: Throwable) {
-            Log.e("vhgiang", exception?.toString())
+            Log.e("vhgiang: db not found", exception?.toString())
         }
 
         if (shouldFetch(result)) {
@@ -40,7 +44,7 @@ class WeatherCacheImpl(
             }.await()
 
             result?.let {
-                localDataGetting.saveWeather(result!!)
+                localDataGetting.saveWeather(result!!, request)
                 result = localDataGetting()
             }
 

@@ -1,7 +1,7 @@
 package com.architecture.repository.weather.local.model
 
 import androidx.room.*
-import com.architecture.repository.core.model.Undefine
+import com.architecture.business.core.info.Undefine
 
 @Entity(tableName = "WeatherEntity")
 data class WeatherEntity(
@@ -12,33 +12,36 @@ data class WeatherEntity(
     @ColumnInfo(name = "cityName")
     var cityName: String = Undefine.UNDEFINE_STRING,
 
+    @ColumnInfo(name = "searchKey")
+    var searchKey: String = Undefine.UNDEFINE_STRING,
+
     @ColumnInfo(name = "lat")
-    var lat: Long = Undefine.UNDEFINE_LONG,
+    var lat: Double = Undefine.UNDEFINE_DOUBLE,
 
     @ColumnInfo(name = "long")
-    var long: Long = Undefine.UNDEFINE_LONG,
+    var long: Double = Undefine.UNDEFINE_DOUBLE,
 
     @ColumnInfo(name = "county")
     var county: String = Undefine.UNDEFINE_STRING,
 
     @ColumnInfo(name = "timeZone")
-    var timeZone: String = Undefine.UNDEFINE_STRING
+    var timeZone: String? = Undefine.UNDEFINE_STRING
 )
 
 @Entity(tableName = "WeatherItemEntity")
 data class WeatherItemEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: String = Undefine.UNDEFINE_STRING,
+    var id: Int = Undefine.UNDEFINE_INT,
 
     @ColumnInfo(name = "parent_id")
-    var parentId: Long = Undefine.UNDEFINE_LONG,
+    var parentId: String = Undefine.UNDEFINE_STRING,
 
     @ColumnInfo(name = "date")
     var date: Long = Undefine.UNDEFINE_LONG,
 
     @ColumnInfo(name = "temperature")
-    var temperature: Long = Undefine.UNDEFINE_LONG,
+    var temperature: Double = Undefine.UNDEFINE_DOUBLE,
 
     @ColumnInfo(name = "pressure")
     var pressure: Int = Undefine.UNDEFINE_INT,

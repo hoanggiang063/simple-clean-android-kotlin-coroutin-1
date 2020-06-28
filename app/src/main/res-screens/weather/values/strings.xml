@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">clean-mvvm</string>
+    <string name="app_name">Weather Forecast</string>
     <string name="btnGetWeather">Get Weather</string>
     <string name="searchViewHint">Search for City</string>
 
-    <string name="weatherItemDate">Date: %</string>
-    <string name="weatherItemTemperature">Average temperature: %</string>
-    <string name="weatherItemPressure">Pressure: %</string>
-    <string name="weatherItemHumidity">Humidity: %</string>
-    <string name="weatherItemDescription">Description: %</string>
+    <string name="weatherItemDate">Date: %s</string>
+    <string name="weatherItemTemperature">Average temperature: %s°C</string>
+    <string name="weatherItemPressure">Pressure: %s</string>
+    <string name="weatherItemHumidity">Humidity: %s</string>
+    <string name="weatherItemDescription">Description: %s</string>
 </resources>

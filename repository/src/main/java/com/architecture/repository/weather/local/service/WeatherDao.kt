@@ -12,18 +12,18 @@ abstract class WeatherDao() {
     protected abstract suspend fun insertWeather(weatherEntity: WeatherEntity)
 
     @Transaction
-    @Query("SELECT * FROM WeatherEntity WHERE cityName like :searchName LIMIT 10")
+    @Query("SELECT * FROM WeatherEntity WHERE cityName LIKE '%' || :searchName || '%' OR searchKey LIKE '%' || :searchName || '%'")
     abstract suspend fun getWeatherWithFullDetail(searchName: String): List<WeatherWithDetail>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract suspend fun insertItems(weatherEntity: WeatherItemEntity)
+    protected abstract suspend fun insertItem(weatherEntity: WeatherItemEntity)
 
     suspend fun saveWeather(weatherEntity: WeatherEntity) {
         insertWeather(weatherEntity)
     }
 
     suspend fun saveWeatherItem(weatherItemEntity: WeatherItemEntity) {
-        insertItems(weatherItemEntity)
+        insertItem(weatherItemEntity)
     }
 
 }

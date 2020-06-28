@@ -16,7 +16,7 @@ import retrofit2.Retrofit
 val featureWeather = module {
 
     factory {
-        get<Retrofit>().create(WeatherRemoteService::class.java)
+        get<Retrofit>().create(WeatherRemoteService::class.java) as WeatherRemoteService
     }
 
     factory {
@@ -35,5 +35,5 @@ val featureWeather = module {
         WeatherUseCaseImpl(get()) as WeatherUseCase
     }
 
-    viewModel { WeatherViewModel(get()) as ViewModel }
+    viewModel { WeatherViewModel(get()) }
 }

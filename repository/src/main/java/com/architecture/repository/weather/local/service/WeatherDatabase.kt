@@ -15,24 +15,10 @@ import com.architecture.repository.weather.local.model.WeatherItemEntity
 abstract class WeatherDatabase : RoomDatabase() {
 
     companion object {
-        val DB_NAME = "weatherdb"
-
-        private var sInstance: WeatherDatabase? = null
-
-        @Synchronized
-        fun getInstance(context: Context): WeatherDatabase {
-            if (sInstance == null) {
-                sInstance = Room
-                    .databaseBuilder(
-                        context.applicationContext,
-                        WeatherDatabase::class.java,
-                        DB_NAME
-                    )
-                    .fallbackToDestructiveMigration()
-                    .build()
-            }
-            return sInstance!!
-        }
+        const val DB_NAME = "CleanDB.db"
+        fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context.applicationContext, WeatherDatabase::class.java, DB_NAME)
+                .build()
     }
 
     // DAO

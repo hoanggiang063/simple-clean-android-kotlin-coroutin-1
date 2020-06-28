@@ -5,18 +5,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.architecture.cleanmvvm.R
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.weather.viewmodel.WeatherViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
+
 class WeatherFragment : Fragment() {
+
+    val searchView: SearchView by lazy {
+        view!!.findViewById<SearchView>(R.id.searchView)
+    }
+
+    val btnGetWeather: AppCompatButton by lazy {
+        view!!.findViewById<AppCompatButton>(R.id.btnGetWeather)
+    }
+
+    val recyclerForeCast: RecyclerView by lazy {
+        view!!.findViewById<RecyclerView>(R.id.recyclerForeCast)
+    }
 
     private val viewModel: WeatherViewModel by viewModel()
 
-    private
+    private lateinit var weatherAdapter: WeatherAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,7 +42,6 @@ class WeatherFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(getSetUpView(), container, false)
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun getSetUpView(): Int {
@@ -32,27 +49,50 @@ class WeatherFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val nameObserver = Observer<List<WeatherInfo>> { newName ->
+        weatherAdapter = WeatherAdapter();
+        recyclerForeCast.layoutManager = LinearLayoutManager(context)
+        recyclerForeCast.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        recyclerForeCast.adapter = weatherAdapter
+
+        val dataObserver = Observer<WeatherInfo> { data ->
+            data.foreCastItems?.let {
+                weatherAdapter.info.clear();
+                weatherAdapter.info.addAll(data.foreCastItems!!)
+                weatherAdapter.notifyDataSetChanged();
+            }
 
         }
 
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        model.currentName.observe(this, nameObserver)
+        val failObserver = Observer<Throwable> { data ->
+            showGenericError("Something went wrong or city not found")
+            weatherAdapter.info.clear();
+            weatherAdapter.notifyDataSetChanged();
+        }
 
-        loadScreenData()
+        viewModel.currentWeatherInfo.observe(this, dataObserver)
+        viewModel.failedException.observe(this, failObserver)
+        btnGetWeather.setOnClickListener { loadScreenData() }
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun loadScreenData() {
-        // do nothing
+        searchView.query?.let { text ->
+            viewModel.loadWeather(text.toString())
+        }
+
     }
 
-    fun showGenericError(error: String) {
-        Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show()
+    private fun showGenericError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 
-    fun showTechnicalError(error: String) {
-        Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show()
+    private fun showTechnicalError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
     }
 
 }

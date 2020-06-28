@@ -5,7 +5,7 @@
     <dimen name="weatherButtonHeight">48dp</dimen>
     <dimen name="weatherButtonWidth">120dp</dimen>
     <!-- for weather item -->
-    <dimen name="weatherItemFontSize">18sp</dimen>
+    <dimen name="weatherItemFontSize">14sp</dimen>
     <dimen name="weatherItemContainerPadding">8dp</dimen>
     <dimen name="weatherListViewPadding">8dp</dimen>
 

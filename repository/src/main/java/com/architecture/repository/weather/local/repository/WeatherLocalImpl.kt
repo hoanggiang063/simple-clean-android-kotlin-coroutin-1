@@ -7,6 +7,7 @@ import com.architecture.cleanmvvm.node1.demo.repository.WeatherRepository
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
 import com.architecture.repository.core.mapper.BaseExceptionMapperImpl
 import com.architecture.repository.core.mapper.BaseInfoMapper
+import com.architecture.repository.weather.local.model.ItemNotFound
 import com.architecture.repository.weather.local.model.WeatherEntity
 import com.architecture.repository.weather.local.model.WeatherItemEntity
 import com.architecture.repository.weather.local.model.WeatherWithDetail
@@ -24,9 +25,9 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
         try {
             var weatherWithDetails = dao.getWeatherWithFullDetail(request!!.city);
             if (weatherWithDetails != null && weatherWithDetails.isNotEmpty()) {
-                return WeatherMapper().transform(weatherWithDetails[0])
+                return WeatherMapper().transform(weatherWithDetails)
             } else {
-                return WeatherInfo();
+                throw ItemNotFound()
             }
 
         } catch (exception: Throwable) {
@@ -35,10 +36,17 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
         }
     }
 
-    suspend fun saveWeather(weatherInfo: WeatherInfo) {
-        dao.saveWeather(WeatherMapper().revertWeather(weatherInfo))
+    suspend fun saveWeather(
+        weatherInfo: WeatherInfo,
+        request: WeatherRequest
+    ) {
+        val weatherEntity = WeatherMapper().revertWeather(weatherInfo)
+        weatherEntity.searchKey = request.city
+        dao.saveWeather(weatherEntity)
         val weatherItems = WeatherMapper().revertWeatherItem(weatherInfo.foreCastItems);
         weatherItems.forEach { item ->
+            item.id = item.date.toInt()
+            item.parentId = weatherInfo.id
             dao.saveWeatherItem(item)
         }
 
@@ -46,22 +54,22 @@ class WeatherLocalImpl(val dao: WeatherDao) : WeatherRepository {
 }
 
 class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
-    override fun transform(input: WeatherWithDetail): WeatherInfo {
+    override fun transform(input: List<WeatherWithDetail>): WeatherInfo {
         val weatherInfo = WeatherInfo();
-
-        weatherInfo.id = input.weather.id;
-        weatherInfo.timeZone = input.weather.timeZone
-        weatherInfo.long = input.weather.long
-        weatherInfo.lat = input.weather.lat
-        weatherInfo.county = input.weather.county
-        weatherInfo.cityName = input.weather.cityName
-        weatherInfo.foreCastItems = getWeatherItem(input.items)
-
+        if (input.isNotEmpty()) {
+            weatherInfo.id = input[0].weather.id;
+            weatherInfo.timeZone = input[0].weather.timeZone
+            weatherInfo.long = input[0].weather.long
+            weatherInfo.lat = input[0].weather.lat
+            weatherInfo.county = input[0].weather.county
+            weatherInfo.cityName = input[0].weather.cityName
+            weatherInfo.foreCastItems = getWeatherItem(input[0].items)
+        }
         return weatherInfo;
     }
 
     private fun getWeatherItem(items: List<WeatherItemEntity>): List<WeatherItemInfo>? {
-        val outList = emptyList<WeatherItemInfo>()
+        val outList = mutableListOf<WeatherItemInfo>()
         items.forEach { inItem ->
             val outItem = WeatherItemInfo();
             outItem.id = inItem.id
@@ -70,6 +78,7 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
             outItem.date = inItem.date
             outItem.humanity = inItem.humanity
             outItem.pressure = inItem.pressure
+            outList.add(outItem)
         }
         return outList
     }
@@ -88,7 +97,7 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
     }
 
     fun revertWeatherItem(items: List<WeatherItemInfo>?): List<WeatherItemEntity> {
-        val outList = emptyList<WeatherItemEntity>()
+        val outList = mutableListOf<WeatherItemEntity>()
         items?.forEach { inItem ->
             val outItem = WeatherItemEntity();
             outItem.id = inItem.id
@@ -97,6 +106,7 @@ class WeatherMapper : BaseInfoMapper<WeatherWithDetail, WeatherInfo> {
             outItem.date = inItem.date
             outItem.humanity = inItem.humanity
             outItem.pressure = inItem.pressure
+            outList.add(outItem)
         }
         return outList
     }

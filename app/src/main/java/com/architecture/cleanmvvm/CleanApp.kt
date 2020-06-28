@@ -6,12 +6,9 @@ import com.architecture.repository.weather.local.service.WeatherDatabase
 import org.jetbrains.anko.doAsync
 import org.koin.android.ext.android.startKoin
 
-class CleanApp : Application() {
+open class CleanApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        doAsync {
-            WeatherDatabase.getInstance(this@CleanApp)
-        }
         configureDi()
     }
 

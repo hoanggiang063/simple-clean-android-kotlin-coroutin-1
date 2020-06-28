@@ -1,16 +1,24 @@
 package com.architecture.cleanmvvm.weather.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.architecture.cleanmvvm.R
 import com.architecture.cleanmvvm.node1.demo.info.WeatherItemInfo
+import com.architecture.repository.weather.local.service.WeatherDatabase
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
-class WeatherAdapter(private val info: List<WeatherItemInfo>) :
+class WeatherAdapter() :
     RecyclerView.Adapter<WeatherViewHolder>() {
+
+    var info: MutableList<WeatherItemInfo> = mutableListOf<WeatherItemInfo>();
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WeatherViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.view_weather_item, parent, false)
@@ -23,7 +31,9 @@ class WeatherAdapter(private val info: List<WeatherItemInfo>) :
 }
 
 class WeatherViewHolder(val parent: View) : RecyclerView.ViewHolder(parent) {
-
+    companion object {
+        const val DATE_TIME_FORMAT = "EEE, dd MMM yyyy"
+    }
     val tvWeatherDate: AppCompatTextView by lazy {
         parent!!.findViewById<AppCompatTextView>(R.id.tvWeatherDate)
     }
@@ -49,15 +59,20 @@ class WeatherViewHolder(val parent: View) : RecyclerView.ViewHolder(parent) {
     }
 
     fun bindTo(item: WeatherItemInfo) {
+
+
+        var simpleDateFormat = SimpleDateFormat(DATE_TIME_FORMAT)
+        simpleDateFormat.timeZone = TimeZone.getDefault()
+
         val date: String = String.format(
             parent.context.getString(R.string.weatherItemDate),
-            item.date.toString()
+            simpleDateFormat.format(Date(item.date *1000))
         )
         tvWeatherDate.text = date
 
         val temperature: String = String.format(
             parent.context.getString(R.string.weatherItemTemperature),
-            item.temperature.toString()
+            item.temperature.roundToInt().toString()
         )
         tvWeatherTemperature.text = temperature
 
@@ -69,18 +84,18 @@ class WeatherViewHolder(val parent: View) : RecyclerView.ViewHolder(parent) {
 
         val humanity: String = String.format(
             parent.context.getString(R.string.weatherItemHumidity),
-            item.humanity.toString()
+            item.humanity.toString() + "%"
         )
         tvWeatherHumidity.text = humanity
 
         val description: String = String.format(
             parent.context.getString(R.string.weatherItemDescription),
-            item.date.toString()
+            item.description
         )
         tvWeatherDescription.text = description
 
         tvWeatherContainer.contentDescription = String.format(
-            "%. %. %. %. %.",
+            "%s. %s. %s. %s. %s.",
             date, temperature, pressure, humanity, description
         )
     }

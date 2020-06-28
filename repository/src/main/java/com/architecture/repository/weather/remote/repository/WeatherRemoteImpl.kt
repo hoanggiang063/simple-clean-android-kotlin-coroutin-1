@@ -25,7 +25,8 @@ class WeatherRemoteImpl(var service: WeatherRemoteService) : WeatherRepository {
                 service.getWeather(
                     request.city,
                     request.numberDays.toString(),
-                    request.appId
+                    request.appId,
+                    request.unit
                 )
             )
         } catch (error: Throwable) {
@@ -51,7 +52,7 @@ class RemoteMapper {
     }
 
     private fun transformItem(list: List<ForeCast>): List<WeatherItemInfo> {
-        val itemInfo = emptyList<WeatherItemInfo>()
+        val itemInfo = mutableListOf<WeatherItemInfo>()
         list.forEach { inItem ->
             val outItem = WeatherItemInfo()
             outItem.pressure = inItem.pressure
@@ -59,6 +60,7 @@ class RemoteMapper {
             outItem.description = getItemDescription(inItem.weather)
             outItem.humanity = inItem.humidity
             outItem.date = inItem.dt
+            itemInfo.add(outItem)
         }
         return itemInfo
     }
