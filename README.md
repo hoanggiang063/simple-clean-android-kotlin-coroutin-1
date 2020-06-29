@@ -32,7 +32,6 @@ https://dexprotector.com
 
 ## Config multi environment for testing, deploy production.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~***~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Code structure
 ## app module: presentation layer, include UI code
 /src/main -> for feature
@@ -59,7 +58,7 @@ https://dexprotector.com
 /src/../weather/local/service -> include database service
 
 /src/../weather/cache/repository -> include a implementation of repository in usecase (combine)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~***~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #Java/Kotlin libraries and frameworks
 
 ## Architecture: Clean+ MVVM
@@ -72,7 +71,7 @@ https://dexprotector.com
 ## DAO: Room
 ## Observer data: LiveData
 ## Decompile apk and rooted detection: Dexprotector
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~***~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #How to run?
 
 ## Please run below commands:
@@ -91,7 +90,6 @@ Or creating apk test file and install it
 ## In order to only verify decompike apk or rooted device, please run below command:
 ./gradlew clean assembleProRelease
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~***~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # What I done so far?
 
