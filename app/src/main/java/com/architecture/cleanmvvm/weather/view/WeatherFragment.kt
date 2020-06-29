@@ -58,13 +58,30 @@ class WeatherFragment : Fragment() {
         setUpListView()
         listenSuccessData()
         listenFailData()
+
         btnGetWeather.setOnClickListener {
-            clearScreenData()
-            if (isValidToLoadData()) {
-                loadScreenData()
-            }
+            doSearch()
         }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                doSearch()
+                return false
+            }
+        })
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun doSearch() {
+        clearScreenData()
+        if (isValidToLoadData()) {
+            loadScreenData()
+        }
     }
 
     private fun isValidToLoadData(): Boolean {

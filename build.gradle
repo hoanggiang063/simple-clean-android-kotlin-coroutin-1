@@ -54,4 +54,5 @@ ext {
     testingSupportLibVersion = '0.1'
     archCoreTestingVersion = '2.1.0'
     mockitoAndroid = '2.24.5'
+    sqlCipherVersion = '4.4.0'
 }

@@ -38,6 +38,7 @@ dependencies {
     api "androidx.room:room-runtime:$androidRoomVersion"
     api "androidx.room:room-ktx:$androidRoomVersion"
     kapt "androidx.room:room-compiler:$androidRoomVersion"
+    api "net.zetetic:android-database-sqlcipher:$sqlCipherVersion"
 
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinTestJunitVersion"

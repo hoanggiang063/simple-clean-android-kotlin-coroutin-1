@@ -1,16 +1,12 @@
 package com.architecture.cleanmvvm.core.di
 
 import com.architecture.cleanmvvm.BuildConfig
-import com.architecture.cleanmvvm.CleanApp
-import com.architecture.cleanmvvm.core.Constants
 import com.architecture.cleanmvvm.core.configuration.EnvConfiguration
-import com.architecture.cleanmvvm.core.security.SecurityMonitor
 import com.architecture.repository.weather.local.service.WeatherDatabase
 import okhttp3.CertificatePinner
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
@@ -63,7 +59,8 @@ val repositoryModule = module {
     }
 
     single(DATABASE) {
-        WeatherDatabase.buildDatabase(androidContext())
+        val config: EnvConfiguration = get()
+        WeatherDatabase.buildDatabase(androidContext(), config.getEnvironmentApiKey())
     }
     factory {
         (get(DATABASE) as WeatherDatabase).weatherDao()

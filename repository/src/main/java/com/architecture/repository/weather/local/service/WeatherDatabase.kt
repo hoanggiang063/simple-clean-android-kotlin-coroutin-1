@@ -6,6 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.architecture.repository.weather.local.model.WeatherEntity
 import com.architecture.repository.weather.local.model.WeatherItemEntity
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
+
 
 @Database(
     entities = [WeatherEntity::class, WeatherItemEntity::class],
@@ -16,9 +19,15 @@ abstract class WeatherDatabase : RoomDatabase() {
 
     companion object {
         const val DB_NAME = "CleanDB.db"
-        fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext, WeatherDatabase::class.java, DB_NAME)
+        fun buildDatabase(context: Context, password: String): WeatherDatabase {
+            val passphrase: ByteArray = SQLiteDatabase.getBytes(password.toCharArray())
+            val factory = SupportFactory(passphrase)
+            return Room
+                .databaseBuilder<WeatherDatabase>(context, WeatherDatabase::class.java, DB_NAME)
+                .openHelperFactory(factory)
                 .build()
+        }
+
     }
 
     // DAO
