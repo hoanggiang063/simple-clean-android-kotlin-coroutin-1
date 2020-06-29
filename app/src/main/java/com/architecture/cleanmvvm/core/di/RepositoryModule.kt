@@ -2,6 +2,7 @@ package com.architecture.cleanmvvm.core.di
 
 import com.architecture.cleanmvvm.CleanApp
 import com.architecture.cleanmvvm.core.Constants
+import com.architecture.cleanmvvm.core.configuration.EnvConfiguration
 import com.architecture.cleanmvvm.core.security.SecurityMonitor
 import com.architecture.repository.weather.local.service.WeatherDatabase
 import okhttp3.OkHttpClient
@@ -22,8 +23,9 @@ val repositoryModule = module {
     }
 
     single {
+        val config: EnvConfiguration = get()
         Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(config.getEnvironmentUrl())
             .client(
                 get()
             )
@@ -38,7 +40,5 @@ val repositoryModule = module {
         (get(DATABASE) as WeatherDatabase).weatherDao()
     }
 
-    single {
-        SecurityMonitor(androidContext())
-    }
+
 }

@@ -38,5 +38,5 @@ val featureWeather = module {
         WeatherUseCaseImpl(get()) as WeatherUseCase
     }
 
-    viewModel { WeatherViewModel(get()) }
+    viewModel { WeatherViewModel(get(), get()) }
 }

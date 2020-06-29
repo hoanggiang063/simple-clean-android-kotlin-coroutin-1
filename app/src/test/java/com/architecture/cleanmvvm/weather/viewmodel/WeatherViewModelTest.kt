@@ -9,12 +9,14 @@ import com.architecture.business.core.exception.BusinessException
 import com.architecture.business.core.exception.TechnicalException
 import com.architecture.business.core.exception.UnknownException
 import com.architecture.business.core.usecase.BaseUseCase
+import com.architecture.cleanmvvm.core.configuration.EnvConfiguration
 import com.architecture.cleanmvvm.node1.demo.callback.WeatherCallBack
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherUseCase
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.Job
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -38,6 +40,18 @@ class WeatherViewModelTest {
     @Mock
     lateinit var viewModel: WeatherViewModel
 
+    @Mock
+    lateinit var envConfiguration: EnvConfiguration
+
+    @Before
+    fun setUp() {
+        envConfiguration = object : EnvConfiguration {
+            override fun getEnvironmentUrl(): String = "url"
+            override fun getEnvironmentApiKey(): String = "apikey"
+            override fun getEnvironmentUnit(): String = "unit"
+        }
+    }
+
     @Test
     fun shouldTriggerSuccessWhenUseCaseReturnData() {
         val mockObserver = mockObserver<WeatherInfo>()
@@ -50,7 +64,8 @@ class WeatherViewModelTest {
                 return Job()
             }
         }
-        viewModel = WeatherViewModel(weatherUseCase);
+
+        viewModel = WeatherViewModel(weatherUseCase, envConfiguration);
         viewModel.currentWeatherInfo.observe(mockLifecycleOwner(), mockObserver)
         viewModel.loadWeather("cali")
         verify(mockObserver).onChanged(ArgumentMatchers.isA(WeatherInfo::class.java))
@@ -68,7 +83,7 @@ class WeatherViewModelTest {
                 return Job()
             }
         }
-        viewModel = WeatherViewModel(weatherUseCase);
+        viewModel = WeatherViewModel(weatherUseCase, envConfiguration);
         viewModel.failedException.observe(mockLifecycleOwner(), mockObserver)
         viewModel.loadWeather("cali")
         verify(mockObserver).onChanged(ArgumentMatchers.isA(Throwable::class.java))
@@ -86,7 +101,7 @@ class WeatherViewModelTest {
                 return Job()
             }
         }
-        viewModel = WeatherViewModel(weatherUseCase);
+        viewModel = WeatherViewModel(weatherUseCase, envConfiguration);
         viewModel.failedByTechnical.observe(mockLifecycleOwner(), mockObserver)
         viewModel.loadWeather("cali")
         verify(mockObserver).onChanged(ArgumentMatchers.isA(TechnicalException::class.java))
@@ -104,7 +119,7 @@ class WeatherViewModelTest {
                 return Job()
             }
         }
-        viewModel = WeatherViewModel(weatherUseCase);
+        viewModel = WeatherViewModel(weatherUseCase, envConfiguration);
         viewModel.failedByBusiness.observe(mockLifecycleOwner(), mockObserver)
         viewModel.loadWeather("cali")
         verify(mockObserver).onChanged(ArgumentMatchers.isA(BusinessException::class.java))

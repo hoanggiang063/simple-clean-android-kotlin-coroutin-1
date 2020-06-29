@@ -61,7 +61,7 @@ android {
         sit {
             dimension = dimenDefault
         }
-        production {
+        pro {
             dimension = dimenDefault
         }
     }

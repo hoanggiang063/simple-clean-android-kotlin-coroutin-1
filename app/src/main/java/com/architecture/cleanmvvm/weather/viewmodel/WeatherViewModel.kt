@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.architecture.business.core.exception.BusinessException
 import com.architecture.business.core.exception.TechnicalException
+import com.architecture.cleanmvvm.core.configuration.EnvConfiguration
 import com.architecture.cleanmvvm.node1.demo.callback.WeatherCallBack
 import com.architecture.cleanmvvm.node1.demo.info.WeatherInfo
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherRequest
 import com.architecture.cleanmvvm.node1.demo.usecase.WeatherUseCase
 
 
-class WeatherViewModel(val weatherUseCase: WeatherUseCase) : ViewModel() {
+class WeatherViewModel(val weatherUseCase: WeatherUseCase, val envConfiguration: EnvConfiguration) : ViewModel() {
 
     private val _currentWeatherInfo = MutableLiveData<WeatherInfo>()
     var currentWeatherInfo: LiveData<WeatherInfo> = _currentWeatherInfo
@@ -26,10 +27,10 @@ class WeatherViewModel(val weatherUseCase: WeatherUseCase) : ViewModel() {
     var failedByTechnical: LiveData<Throwable> = _failedByTechnical
 
     fun loadWeather(searchText: String) {
-
         val request = WeatherRequest()
         request.city = searchText
-        request.appId = "60c6fbeb4b93ac653c492ba806fc346d"
+        request.appId = envConfiguration.getEnvironmentApiKey()
+        request.unit = envConfiguration.getEnvironmentUnit()
         request.numberDays = 7
         weatherUseCase
             .buildUseCase(request)
