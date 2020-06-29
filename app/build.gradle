@@ -2,21 +2,67 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dexprotector'
+buildscript {
+    repositories {
+        flatDir { dirs '../dexprotector' }
+    }
+    dependencies {
+        classpath ':dexprotector-gradle-plugin'
+        classpath ':dexprotector'
+    }
+}
 
 android {
     compileSdkVersion 28
+
+    signingConfigs {
+        release {
+            keyAlias 'android'
+            keyPassword 'android'
+            storeFile file("../sample.keystore")
+            storePassword 'android'
+        }
+        release {
+            keyAlias 'android'
+            keyPassword 'android'
+            storeFile file("../sample.keystore")
+            storePassword 'android'
+        }
+    }
+
     defaultConfig {
         applicationId "com.architecture.cleanmvvm"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
     }
     buildTypes {
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.set("dexprotector.configFile", "${projectDir}/dexprotector.xml")
+            signingConfig signingConfigs.release
+        }
+    }
+
+    def dimenDefault = "dimenDefault"
+    productFlavors {
+        flavorDimensions dimenDefault
+
+        sit {
+            dimension = dimenDefault
+        }
+        production {
+            dimension = dimenDefault
         }
     }
 
@@ -48,7 +94,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.6.0'
 
-    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
     implementation "androidx.sqlite:sqlite:2.1.0"
 
     implementation project(':business')
