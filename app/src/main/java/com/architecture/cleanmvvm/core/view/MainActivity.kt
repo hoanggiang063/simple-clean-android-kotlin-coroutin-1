@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isLoadMainView(): Boolean {
-        return BuildConfig.BUILD_TYPE == "release" && securityMonitor.isSafeEnviroment() ||
+        return (BuildConfig.BUILD_TYPE == "release" && securityMonitor.isSafeEnviroment()) ||
                 BuildConfig.BUILD_TYPE == "debug"
     }
 

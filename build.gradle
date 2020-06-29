@@ -7,10 +7,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0-beta04'
+        classpath 'com.android.tools.build:gradle:4.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
@@ -24,4 +22,36 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Define versions in a single place
+ext {
+    // Sdk and tools
+    minSdkVersion = 19
+    targetSdkVersion = 28
+    compileSdkVersion = 28
+
+    // App dependencies
+    appCompatVersion = '1.1.0'
+    coreKtxVersion = '1.3.0'
+    constraintLayoutVersion = '1.1.3'
+    recyclerviewVersion = '1.1.0'
+    kotlinxCoroutinesVersion = '1.3.3'
+    ankoVersion = '0.10.4'
+    koinVersion = '1.0.2'
+    retrofitVersion = '2.6.0'
+    sqliteVersion = '2.1.0'
+    loggingInterceptorVersion = '4.0.0'
+    androidRoomVersion = '2.2.3'
+
+    //Testing
+    junitVersion = '4.12'
+    kotlinTestJunitVersion = '1.3.72'
+    mockitoKotlinVersion = '2.2.0'
+    testRulesVersion = '1.2.0'
+    assertjVersion = '3.16.1'
+    mockitoCoreVersion = '3.3.3'
+    testingSupportLibVersion = '0.1'
+    archCoreTestingVersion = '2.1.0'
+    mockitoAndroid = '2.24.5'
 }
