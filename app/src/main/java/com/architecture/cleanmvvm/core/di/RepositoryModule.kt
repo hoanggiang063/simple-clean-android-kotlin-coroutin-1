@@ -1,10 +1,13 @@
 package com.architecture.cleanmvvm.core.di
 
+import com.architecture.cleanmvvm.BuildConfig
 import com.architecture.cleanmvvm.CleanApp
 import com.architecture.cleanmvvm.core.Constants
 import com.architecture.cleanmvvm.core.configuration.EnvConfiguration
 import com.architecture.cleanmvvm.core.security.SecurityMonitor
 import com.architecture.repository.weather.local.service.WeatherDatabase
+import okhttp3.CertificatePinner
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -14,11 +17,37 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 private const val DATABASE = "DATABASE"
+private const val DEBUG_HTTP = "DebugHttp"
+private const val RELEASE_HTTP = "ReleaseHttp"
+
 val repositoryModule = module {
+
+    single(DEBUG_HTTP) {
+        val debugInterceptor = HttpLoggingInterceptor()
+        debugInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        debugInterceptor as Interceptor
+    }
+
+    single(RELEASE_HTTP) {
+        val releaseInterceptor = HttpLoggingInterceptor()
+        releaseInterceptor.level = HttpLoggingInterceptor.Level.NONE
+        releaseInterceptor as Interceptor
+    }
+
     single {
-        OkHttpClient.Builder().addInterceptor(
-            HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val config: EnvConfiguration = get()
+        val certificatePinner = CertificatePinner.Builder()
+            .add(config.getEnvironmentUrl(), config.getSpinningKey())
+            .build()
+
+        var interceptor:Interceptor = get(DEBUG_HTTP)
+        if(!BuildConfig.DEBUG) interceptor = get(RELEASE_HTTP)
+
+        OkHttpClient.Builder()
+            .certificatePinner(certificatePinner)
+            .addInterceptor(
+                interceptor
         ).build() as OkHttpClient
     }
 

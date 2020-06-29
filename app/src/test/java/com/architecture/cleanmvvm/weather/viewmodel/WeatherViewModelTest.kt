@@ -26,7 +26,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
-
 @RunWith(MockitoJUnitRunner::class)
 class WeatherViewModelTest {
 
@@ -49,6 +48,7 @@ class WeatherViewModelTest {
             override fun getEnvironmentUrl(): String = "url"
             override fun getEnvironmentApiKey(): String = "apikey"
             override fun getEnvironmentUnit(): String = "unit"
+            override fun getSpinningKey(): String = "sha1/key"
         }
     }
 
